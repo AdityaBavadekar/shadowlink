@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PC Dashboard</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,100;0,300;0,400;0,500;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Cal+Sans&family=Damion&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            body {
+                font-family: "IBM Plex Mono", sans-serif;
+            }
+
+            .glitch {
+                position: relative;
+                color: #00c0ff;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            .glitch::after {
+                content: attr(data-text);
+                position: absolute;
+                top: 0;
+                left: 0;
+                background: linear-gradient(45deg, rgba(0, 255, 255, 0.8), rgba(0, 0, 255, 0.8));
+                background-size: 400%;
+                z-index: -1;
+            }
+
+            .bg-terminal {
+                background-color: black;
+            }
+
+            .info-text {
+                color: #80c6f7;
+            }
+
+            .border-custom {
+                border: 2px solid #00c0ff;
+            }
+            .command-input {
+                background-color: black;
+                color: #80c6f7;
+                border: 1px solid #00c0ff;
+                padding: 8px 12px;
+                border-radius: 4px;
+                width: 100%;
+            }
+
+            .command-input:focus {
+                outline: none;
+            }
+
+            .output {
+                color: #00ff00;
+                padding: 12px;
+                border-radius: 4px;
+                margin-top: 10px;
+                white-space: pre-wrap;
+                font-family: "Courier New", Courier, monospace;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+        </style>
+    </head>
+
+    <body class="bg-terminal text-white mx-4">
+        <div class="mt-1 flex flex-col items-center justify-center space-y-4">
+            <div class="px-6 py-8 rounded-xl max-w-md w-full">
+                <h1 class="text-3xl font-bold text-center glitch mb-5">PC Dashboard</h1>
+                <div class="text-center mt-4 text-sm">
+                    <p class="info-text">
+                        Time: <span class="font-semibold" id="current-time"><!--CURRENT_TIME--></span>
+                    </p>
+                    <p class="mt-2 info-text">
+                        Battery Status:<br><span class="font-semibold" id="battery-status"><!--BATTERY_STATUS--></span>
+                    </p>
+                    <p class="mt-2 info-text">
+                        Location:
+                        <!--LOCATION-->
+                    </p>
+                    <p class="mt-2 info-text">
+                        Free Memory:
+                        <!--FREE_MEMORY-->
+                    </p>
+                    <p class="mt-2 info-text">
+                        Total Memory:
+                        <!--TOTAL_MEMORY-->
+                    </p>
+                    <p class="mt-2 info-text">
+                        Uptime:
+                        <!--UPTIME-->
+                    </p>
+                    <p class="mt-2 info-text">
+                        IP Address:
+                        <!--IP-->
+                    </p>
+                    <a href="/snap"><p class="mt-2 text-blue-600 italic">View snapshot</p></a>
+                    <a href="/logs"><p class="mt-2 text-blue-600 italic">View logs</p></a>
+                    <a href="/video"><p class="mt-2 text-blue-600 italic">Live video</p></a>
+                </div>
+                <div class="mt-5 py-5 flex flex-col">
+                    <input type="text" id="command-input" class="command-input" autocomplete="off" placeholder="Enter command..."/>
+                    <button id="exec-btn" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded">RUN</button>
+                </div>
+                <div id="output" class="output bg-black"></div>
+            </div>
+        </div>
+
+        <script>
+
+            document.getElementById("command-input").addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    document.getElementById("exec-btn").click();
+                }
+            });
+
+            document.getElementById("exec-btn").addEventListener("click", async function () {
+                const command = document.getElementById("command-input").value;
+                if (!command) return;
+
+                const outputElement = document.getElementById("output");
+                outputElement.textContent = "Executing...";
+
+                try {
+                    const response = await fetch("/exec", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "auth-0": "YES",
+                        },
+                        body: JSON.stringify({ command: command }),
+                    });
+
+                    const data = await response.json();
+                    if (!data.error) {
+                        outputElement.style.backgroundColor = '#222';
+                        outputElement.style.color = '#00ff00';
+                        outputElement.textContent = data.output || "No output returned.";
+                    } else {
+                        outputElement.style.backgroundColor = '#800000';
+                        outputElement.style.color = 'white';
+                        outputElement.textContent = `Error: ${data.output || "Unknown error"}`;
+                    }
+                } catch (error) {
+                    outputElement.textContent = "Error executing command.";
+                }
+            });
+        </script>
+    </body>
+</html>
