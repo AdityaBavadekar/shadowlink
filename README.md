@@ -24,8 +24,8 @@ _Server to access and moniter your PC from anywhere in the world_
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/AdityaBavadekar/shadow-link.git
-   cd shadow-link
+   git clone https://github.com/AdityaBavadekar/shadowlink.git
+   cd shadowlink
    ```
 
 2. **Create `.env` file**
