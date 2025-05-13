@@ -1,6 +1,6 @@
 # ShadowLink
 
-_WebUI to access and moniter your PC from anywhere in the world_
+_Server to access and moniter your PC from anywhere in the world_
 
 - ShadowLink is a secure, remote access server, helping you to access your PC's resources from anywhere via an authenticated web interface.
 
