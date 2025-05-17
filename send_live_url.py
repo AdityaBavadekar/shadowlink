@@ -3,13 +3,18 @@ import time
 
 def get_ngrok_url():
     ngrok_api_url = "http://localhost:4040/api/tunnels"
-    response = requests.get(ngrok_api_url)
-
-    if response.status_code == 200:
-        tunnels = response.json().get('tunnels', [])
-        if tunnels:
-            public_url = tunnels[0]['public_url']
-            return public_url
+    success = False
+    while not success:
+        try:
+            response = requests.get(ngrok_api_url)
+            if response.status_code == 200:
+                tunnels = response.json().get('tunnels', [])
+                if tunnels:
+                    public_url = tunnels[0]['public_url']
+                    return public_url
+        except:
+            print("ngrok is not running yet, retrying in 1 seconds...")
+            time.sleep(1)
     return None
 
 
