@@ -6,6 +6,10 @@ _Server to access and moniter your PC from anywhere in the world_
 
 - Tunneling with **Ngrok** allows global access, while token-based authentication ensures secure connections.
 
+
+> *Before using ShadowLink, you must read the [Security Notice](#important-security-notice). It contains critical risks and setup requirements — skipping it could leave your system fully exposed.*
+
+
 <div align="center">
 <img src="screenshots/_.png" width="50%">
 </div>
@@ -16,6 +20,7 @@ _Server to access and moniter your PC from anywhere in the world_
 | `/snap`   | Displays two images: (1) Screenshot of the screen, and (2) Image captured using Webcam. _Both images are instantly taken the moment you visit this route._     | ![Snapshot Screenshot](/screenshots/snap.png)  |
 | `/logs`   | Server logs  | ![Logs Screenshot](/screenshots/logs.png)      |
 | `/login`  | Login page   | ![Login Screenshot](/screenshots/login.png)    |
+| `/watch` | Watch the live webcam stream for 20sec |                            |
 | `/logout` | Logout route |                                                |
 
 
@@ -79,6 +84,34 @@ _Server to access and moniter your PC from anywhere in the world_
    ```bash
    ./run.sh
    ```
+
+## Important Security Notice
+
+> DO NOT SKIP THIS
+
+**ShadowLink is intended for educational and small-scale personal use only. It is not designed for production or enterprise environments.**
+
+This tool provides remote access and command execution capabilities on your PC. If misconfigured or improperly secured, it can lead to full system compromise. Use with caution.
+
+### Key Security Considerations
+
+* ShadowLink allows remote shell command execution via the `execSync` method. This enables full control of your system from the browser. Improper access can lead to remote code execution.
+
+* Login credentials are stored in plain text in the `.env` file. This file must be secured and never shared or committed to version control.
+
+* The application is not made for public or large-scale use. Exposing it directly to the internet for longer period of time is strongly discouraged.
+
+* A user with write access to the codebase can delete it or modify the application to bypass authentication entirely. File permissions alone are not sufficient security.
+
+### Recommendations
+
+* Use strong, unique credentials.
+* Do not run the server with root or administrator privileges.
+* Restrict access using a firewall, VPN, or IP filtering.
+* Log and monitor all access and command usage.
+* Create a dedicated system user with minimal permissions for running this server.
+
+**Use at your own risk. Proper security configuration is your responsibility.**
 
 
 ## License
